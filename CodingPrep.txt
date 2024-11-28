@@ -1,0 +1,528 @@
+The Least Common Ancestor (LCA) in a Binary Search Tree (BST) is the lowest node that has both given nodes as descendants. Here’s a simple way to find the LCA:
+
+
+Here’s a C code implementation to find the Least Common Ancestor (LCA) in a Binary Search Tree (BST):
+
+#include <stdio.h>
+#include <stdlib.h>
+
+// Definition for a binary tree node.
+struct TreeNode {
+    int val;
+    struct TreeNode *left;
+    struct TreeNode *right;
+};
+
+// Helper function to create a new tree node
+struct TreeNode* newNode(int item) {
+    struct TreeNode* temp = (struct TreeNode*)malloc(sizeof(struct TreeNode));
+    temp->val = item;
+    temp->left = temp->right = NULL;
+    return temp;
+}
+
+// Function to find the LCA of n1 and n2
+struct TreeNode* findLCA(struct TreeNode* root, int n1, int n2) {
+    if (root == NULL) return NULL;
+
+    // If both n1 and n2 are smaller than root, then LCA lies in left
+    if (root->val > n1 && root->val > n2)
+        return findLCA(root->left, n1, n2);
+
+    // If both n1 and n2 are greater than root, then LCA lies in right
+    if (root->val < n1 && root->val < n2)
+        return findLCA(root->right, n1, n2);
+
+    // If one n1 or n2 is on one side and the other on the other side, root is the LCA
+    return root;
+}
+
+int main() {
+    // Constructing the BST
+    struct TreeNode* root = newNode(20);
+    root->left = newNode(8);
+    root->right = newNode(22);
+    root->left->left = newNode(4);
+    root->left->right = newNode(12);
+    root->left->right->left = newNode(10);
+    root->left->right->right = newNode(14);
+
+    int n1 = 10, n2 = 14;
+    struct TreeNode* lca = findLCA(root, n1, n2);
+    printf("LCA of %d and %d is %d\n", n1, n2, lca->val);
+
+    n1 = 14, n2 = 8;
+    lca = findLCA(root, n1, n2);
+    printf("LCA of %d and %d is %d\n", n1, n2, lca->val);
+
+    n1 = 10, n2 = 22;
+    lca = findLCA(root, n1, n2);
+    printf("LCA of %d and %d is %d\n", n1, n2, lca->val);
+
+    return 0;
+}
+
+This code constructs a BST and finds the LCA of given nodes. The findLCA function uses the properties of BST to determine the LCA efficiently12.
+
+====================================================================
+
+The height of a binary tree is the length of the longest path from the root node to any leaf node. In other words, it’s the number of edges on the longest path from the root to a leaf.
+
+Here’s a simple way to calculate the height of a binary tree using recursion in C:
+
+#include <stdio.h>
+#include <stdlib.h>
+
+// Definition for a binary tree node.
+struct TreeNode {
+    int val;
+    struct TreeNode *left;
+    struct TreeNode *right;
+};
+
+// Helper function to create a new tree node
+struct TreeNode* newNode(int item) {
+    struct TreeNode* temp = (struct TreeNode*)malloc(sizeof(struct TreeNode));
+    temp->val = item;
+    temp->left = temp->right = NULL;
+    return temp;
+}
+
+// Function to calculate the height of the binary tree
+int height(struct TreeNode* node) {
+    if (node == NULL)
+        return 0;
+    else {
+        // Compute the height of each subtree
+        int leftHeight = height(node->left);
+        int rightHeight = height(node->right);
+
+        // Use the larger one
+        if (leftHeight > rightHeight)
+            return(leftHeight + 1);
+        else return(rightHeight + 1);
+    }
+}
+
+int main() {
+    // Constructing the binary tree
+    struct TreeNode* root = newNode(1);
+    root->left = newNode(2);
+    root->right = newNode(3);
+    root->left->left = newNode(4);
+    root->left->right = newNode(5);
+
+    printf("Height of the binary tree is %d\n", height(root));
+
+    return 0;
+}
+
+In this code, the height function recursively calculates the height of the left and right subtrees and returns the greater of the two heights plus one12.
+
+=============================================================================================
+
+To check if a binary tree is a Binary Search Tree (BST), you can use a recursive approach that ensures each node follows the BST properties:
+
+The left subtree of a node contains only nodes with keys less than the node’s key.
+The right subtree of a node contains only nodes with keys greater than the node’s key.
+Both the left and right subtrees must also be binary search trees.
+Here’s a C implementation to check if a binary tree is a BST:
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <limits.h>
+
+// Definition for a binary tree node.
+struct TreeNode {
+    int val;
+    struct TreeNode *left;
+    struct TreeNode *right;
+};
+
+// Helper function to create a new tree node
+struct TreeNode* newNode(int item) {
+    struct TreeNode* temp = (struct TreeNode*)malloc(sizeof(struct TreeNode));
+    temp->val = item;
+    temp->left = temp->right = NULL;
+    return temp;
+}
+
+// Utility function to check if a binary tree is a BST
+int isBSTUtil(struct TreeNode* node, int min, int max) {
+    // An empty tree is a BST
+    if (node == NULL)
+        return 1;
+
+    // False if this node violates the min/max constraint
+    if (node->val < min || node->val > max)
+        return 0;
+
+    // Otherwise, check the subtrees recursively tightening the min/max constraints
+    return isBSTUtil(node->left, min, node->val - 1) &&
+           isBSTUtil(node->right, node->val + 1, max);
+}
+
+// Function to check if a binary tree is a BST
+int isBST(struct TreeNode* node) {
+    return isBSTUtil(node, INT_MIN, INT_MAX);
+}
+
+int main() {
+    // Constructing the binary tree
+    struct TreeNode* root = newNode(4);
+    root->left = newNode(2);
+    root->right = newNode(5);
+    root->left->left = newNode(1);
+    root->left->right = newNode(3);
+
+    if (isBST(root))
+        printf("Is BST\n");
+    else
+        printf("Not a BST\n");
+
+    return 0;
+}
+
+In this code, the isBSTUtil function checks whether the tree rooted at a given node is a BST within the specified range of minimum and maximum values12.
+
+================================================
+
+To merge two sorted linked lists into one sorted linked list, you can use a simple iterative approach. Here’s a C implementation:
+
+#include <stdio.h>
+#include <stdlib.h>
+
+// Definition for a linked list node.
+struct ListNode {
+    int val;
+    struct ListNode *next;
+};
+
+// Helper function to create a new node
+struct ListNode* newNode(int val) {
+    struct ListNode* temp = (struct ListNode*)malloc(sizeof(struct ListNode));
+    temp->val = val;
+    temp->next = NULL;
+    return temp;
+}
+
+// Function to merge two sorted linked lists
+struct ListNode* mergeTwoLists(struct ListNode* l1, struct ListNode* l2) {
+    // Create a dummy node to act as the start of the merged list
+    struct ListNode dummy;
+    struct ListNode* tail = &dummy;
+    dummy.next = NULL;
+
+    // Traverse both lists
+    while (l1 != NULL && l2 != NULL) {
+        if (l1->val <= l2->val) {
+            tail->next = l1;
+            l1 = l1->next;
+        } else {
+            tail->next = l2;
+            l2 = l2->next;
+        }
+        tail = tail->next;
+    }
+
+    // Attach the remaining nodes of l1 or l2
+    if (l1 != NULL) {
+        tail->next = l1;
+    } else {
+        tail->next = l2;
+    }
+
+    return dummy.next;
+}
+
+// Function to print the linked list
+void printList(struct ListNode* node) {
+    while (node != NULL) {
+        printf("%d -> ", node->val);
+        node = node->next;
+    }
+    printf("NULL\n");
+}
+
+int main() {
+    // Creating two sorted linked lists
+    struct ListNode* l1 = newNode(1);
+    l1->next = newNode(3);
+    l1->next->next = newNode(5);
+
+    struct ListNode* l2 = newNode(2);
+    l2->next = newNode(4);
+    l2->next->next = newNode(6);
+
+    // Merging the lists
+    struct ListNode* mergedList = mergeTwoLists(l1, l2);
+
+    // Printing the merged list
+    printf("Merged Linked List: ");
+    printList(mergedList);
+
+    return 0;
+}
+
+In this code, the mergeTwoLists function merges two sorted linked lists by comparing the nodes and linking them in sorted order12.
+
+============================================================
+
+Merge sort is an efficient, stable, and comparison-based sorting algorithm that follows the divide-and-conquer approach. Here’s a step-by-step explanation of how merge sort works:
+
+Divide: Recursively divide the input array into two halves until each subarray contains a single element.
+Conquer: Sort each subarray individually.
+Merge: Merge the sorted subarrays back together to form the final sorted array.
+Merge Sort Algorithm in C
+Here’s a C implementation of the merge sort algorithm:
+
+#include <stdio.h>
+#include <stdlib.h>
+
+// Function to merge two subarrays of arr[]
+void merge(int arr[], int left, int mid, int right) {
+    int n1 = mid - left + 1;
+    int n2 = right - mid;
+
+    // Create temporary arrays
+    int L[n1], R[n2];
+
+    // Copy data to temporary arrays L[] and R[]
+    for (int i = 0; i < n1; i++)
+        L[i] = arr[left + i];
+    for (int j = 0; j < n2; j++)
+        R[j] = arr[mid + 1 + j];
+
+    // Merge the temporary arrays back into arr[left..right]
+    int i = 0, j = 0, k = left;
+    while (i < n1 && j < n2) {
+        if (L[i] <= R[j]) {
+            arr[k] = L[i];
+            i++;
+        } else {
+            arr[k] = R[j];
+            j++;
+        }
+        k++;
+    }
+
+    // Copy the remaining elements of L[], if any
+    while (i < n1) {
+        arr[k] = L[i];
+        i++;
+        k++;
+    }
+
+    // Copy the remaining elements of R[], if any
+    while (j < n2) {
+        arr[k] = R[j];
+        j++;
+        k++;
+    }
+}
+
+// Function to implement merge sort
+void mergeSort(int arr[], int left, int right) {
+    if (left < right) {
+        int mid = left + (right - left) / 2;
+
+        // Sort first and second halves
+        mergeSort(arr, left, mid);
+        mergeSort(arr, mid + 1, right);
+
+        // Merge the sorted halves
+        merge(arr, left, mid, right);
+    }
+}
+
+// Function to print an array
+void printArray(int arr[], int size) {
+    for (int i = 0; i < size; i++)
+        printf("%d ", arr[i]);
+    printf("\n");
+}
+
+int main() {
+    int arr[] = {12, 11, 13, 5, 6, 7};
+    int arr_size = sizeof(arr) / sizeof(arr[0]);
+
+    printf("Given array is \n");
+    printArray(arr, arr_size);
+
+    mergeSort(arr, 0, arr_size - 1);
+
+    printf("\nSorted array is \n");
+    printArray(arr, arr_size);
+    return 0;
+}
+
+This code demonstrates the merge sort algorithm by dividing the array into smaller subarrays, sorting them, and then merging them back together12.
+
+======================================================================
+ maximum element in the stack:
+ 
+ int maxStack[100000] = { 0 };
+ int stack[100000] = { 0 };
+ 
+int* getMax(int operations_count, char** operations, int* result_count) {
+    int top = -1;
+    
+    *result_count = 0;
+    
+    for (int i = 0; i < operations_count; i++) {
+        char* next_token = NULL;
+        int* a = NULL;
+        int max = 0;
+
+        switch(*operations[i]) {
+        case '1':
+            ++top;
+            char* c = strtok(operations[i], " ");
+            stack[top] = atoi(strtok(NULL, " "));
+            break;
+        case '2':
+        if(top!=-1) {
+            stack[top--] = 0;
+        }
+            break;
+
+        case '3':
+            max = 0;
+            if(top!=-1) {
+            for (int j = 0; j <= top; j++) {
+                if (stack[j] > max)
+                    max = stack[j];
+            }
+            maxStack[(*result_count)++] = max;
+            }
+            break;
+        }
+    }
+    return maxStack;
+}
+
+=====================================================================================
+
+removing cylinders to get all the 3 stacks of same size
+Solution in C++:
+
+void removeCylinder(vector<int>& cylinders, int& top, int& curr, int target)
+{
+    while(curr > target && top < cylinders.size())
+    {
+        curr -= cylinders[top];
+        top++;
+    }
+}
+
+int equalStacks(vector<int> h1, vector<int> h2, vector<int> h3) {
+    
+    int ht1 = std::accumulate(h1.begin(), h1.end(), 0);
+    int ht2 = std::accumulate(h2.begin(), h2.end(), 0);
+    int ht3 = std::accumulate(h3.begin(), h3.end(), 0);
+    vector<int> heights = {ht1, ht2, ht3};
+    int target = *min_element(heights.begin(), heights.end());
+    int t1 = 0, t2 = 0, t3 = 0;
+    while(ht1 != ht2 || ht1 != ht3 || ht2 != ht3)
+    {
+        removeCylinder(h1, t1, ht1, target);
+        removeCylinder(h2, t2, ht2, target);
+        removeCylinder(h3, t3, ht3, target);
+        heights = {ht1, ht2, ht3};
+        target = *min_element(heights.begin(), heights.end());
+    }
+    return ht1;
+}
+===============================================================
+Queue implementation using two stacks:
+
+#include <cmath>
+#include <cstdio>
+#include <vector>
+#include <iostream>
+#include <algorithm>
+#include <stack>
+#include <string>
+
+using namespace std;
+
+class OwnQueue {
+protected:
+    stack<int> stackA, stackB;
+
+public:
+    OwnQueue(stack<int> stackA, stack<int> stackB) : stackA(stackA), stackB(stackB) {}
+    OwnQueue() {}
+
+    void queue(int a) {
+        stackA.push(a);
+    }
+    int dequeueUtil(bool pop) {
+        int ret;
+        if (stackB.empty()) {
+            while (!stackA.empty()) {
+                stackB.push(stackA.top());
+                stackA.pop();
+            }
+        }
+
+        if (stackB.empty()) {
+            throw out_of_range("Stack is empty");
+        }
+
+        ret = stackB.top();
+        if (pop)
+            stackB.pop();
+        return ret;
+    }
+
+    void dequeue() {
+        dequeueUtil(true);
+    }
+    int front() {
+        return dequeueUtil(false);
+    }
+
+    bool isEmpty() {
+        if (stackA.empty() && stackB.empty())
+            return true;
+        else
+            return false;
+    }
+};
+
+int main() {
+    /* Enter your code here. Read input from STDIN. Print output to STDOUT */
+
+    OwnQueue qObj;
+    vector<int> vectorRes;
+    int q;
+
+    cin >> q;
+    for (int i = 0; i < q; i++) {
+        int command, num;
+        cin >> command;
+        try {
+            switch (command) {
+            case 1:
+                cin >> num;
+                qObj.queue(num);
+                break;
+            case 2:
+                qObj.dequeue();
+                break;
+            case 3:
+                vectorRes.push_back(qObj.front());
+                break;
+            }
+        }
+        catch (out_of_range e) {
+            cout << e.what();
+        }
+    }
+
+    for (int i = 0; i < vectorRes.size(); i++)
+        cout << vectorRes[i] << endl;
+
+    return 0;
+}
